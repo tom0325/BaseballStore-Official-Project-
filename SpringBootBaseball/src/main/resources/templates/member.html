@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<div class="container">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js">
+  </script>
+
+
+  
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Hugo 0.101.0">
+    <title>Signin Template · Bootstrap v4.6</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.6/examples/sign-in/">
+
+
+    <!-- Bootstrap core CSS -->
+<link href="../assets/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    
+    <!-- Custom styles for this template -->
+    <link href="signin.css" rel="stylesheet">
+  </head>
+  <body class="align-left">
+
+  
+  <form >
+  <fieldset class="form-group border p-1">
+  <h4>
+  		<br><h1 class="text-center">後臺管理</h1>
+     <div class="row">
+     <div class="col-sm-2 offset-sm-1">
+     <br>
+     Member Name:<input type="text" id="name" value="tom"/><br>
+     <br>
+     Member phone:<input type="text" id="phone" value="0912"/><br>
+     <br>
+     Member password:<input type="text" id="password" value="123"/><br>
+     <br>
+     Member email:<input type="text" id="email" value="123@gmail.com"/><br>
+     <br>
+     Member address:<input type="text" id="address" value="Tpe"/><br>
+     <br>
+     Enabled:<input type="text" id="enabled" value="y"/><br>
+     </div>
+     <br>
+
+	<div class="col-sm-4 offset-sm-1">   	
+     <div id="display"></div>
+     <br>
+    <table class="table table-info" border="1" style="width:650px">
+     <br>
+     <thead >
+          <h1><tr class="text-center">
+               <th>Name</th>
+               <th>Member phone</th>
+               <th>Member email</th>             
+               <th>address</th>              
+           </tr>
+           </h1>
+     </thead>
+     
+     
+     <tbody id="tbody">
+     </tbody>
+    
+    </table>
+    </div>
+    </div>
+   
+    </fieldset>
+    </form>
+    </body>
+    
+    <div class="text-center">
+    <div class="row">
+    <div class="offset-sm-2">
+	 <input type="button" class="btn btn-primary" id="query" value="Get All Members"/>
+	 </div>
+	 
+	 <div class="offset-sm-1">
+     <input type="button" class="btn btn-primary"id="add" value="Add Members"/>
+     </div>
+     
+     <div class="offset-sm-1">
+     <input type="button" class="btn btn-primary"id="update" value="Update Members"/>
+     </div>
+     
+     <div class="offset-sm-1">
+     <input type="button" class="btn btn-primary" id="delete1" value="Delete Members"/>
+     </div>
+     </div>
+     </div>
+
+
+    <script>
+    function query(){
+    	
+    	$.ajax({
+               url:'members/getAll',
+               type :'get',
+               cache: false,
+               datatype:"application/json",
+              success : function(data) 
+              {  
+              	$('#tbody').empty();          	  
+              	$.each(data, function (index, item) {
+              	     var eachrow = "<tr>"
+              	    	         + "<td>" + item.name + "</td>"
+      	                         + "<td>" + item.phone + "</td>"
+              	                 + "<td>" + item.email + "</td>"
+              	                 + "<td>" + item.address + "</td>" 
+              	                 /*+ "<td>" + item.password + "</td>" 
+              	                 + "<td>" + item.enabled + "</td>" */       	                           
+              	                 + "</tr>";
+              	     $('#tbody').append(eachrow);
+              	});  
+              },error: function(data) 
+              {
+                 console.log('無法送出');
+              }
+        });
+      }
+    
+
+    function add(){
+      	
+   	 var obj={};
+   	 obj.name=($("#name").val());
+        obj.phone=($("#phone").val());
+        obj.address=($("#address").val());
+        obj.email=($("#email").val());
+        obj.password=($("#password").val());
+        obj.enabled=($("#enabled").val());
+        
+        
+   	 $.ajax({
+            url:'members/add',
+            type :'post',
+            data : JSON.stringify(obj),
+            contentType:"application/json",
+            cache: false,
+            datatype:"text/html",
+           success : function() 
+           {            	  
+         	  alert('新增完成!'); 
+         	  query();
+           },error: function(data) 
+           {
+              console.log('無法送出');
+           }
+     });
+   }
+
+   function update(){
+     	
+  	 var obj={};
+  	    obj.name=($("#name").val());
+       obj.phone=($("#phone").val());
+       obj.address=($("#address").val());
+       obj.email=($("#email").val());
+       obj.password=($("#password").val());
+       obj.enabled=($("#enabled").val());
+       
+  	 $.ajax({
+           url:'members/update',
+           type :'post',
+           data : JSON.stringify(obj),
+           contentType:"application/json",
+           cache: false,
+           datatype:"text/html",
+          success : function() 
+          {            	  
+        	  alert('修改完成'); 
+        	  query();
+          },error: function(data) 
+          {
+             console.log('無法送出');
+          }
+    });
+   }
+
+   function delete1(){
+     	$.post("members/del",{"phone": $("#phone").val()}, query);
+     	alert('刪除完成');
+      }
+   
+
+    function start()
+    {
+    	
+    	$("#query").click(query);
+    	$("#add").click(add);
+    	$("#update").click(update);
+    	$("#delete1").click(delete1);
+     }
+
+    $(document).ready(start);
+    </script>
+
+</head>
+<body>
+
+</body>
+</html>
